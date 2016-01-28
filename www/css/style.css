@@ -1,0 +1,30 @@
+body {
+  background: #333;
+}
+
+#dropzone {
+  position: relative;
+  border: 10px dotted #FFF;
+  border-radius: 20px;
+  color: white;
+  font: bold 24px/200px arial;
+  height: auto;
+  margin: 30px auto;
+  text-align: center;
+  width: auto;
+}
+
+#dropzone div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+#dropzone img {
+  border-radius: 10px;
+  vertical-align: middle;
+  max-width: 95%;
+  max-height: 95%;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <script type="text/javascript" src="components/loader.js"></script>
+   <!--  <link rel="stylesheet" href="css/topcoat/css/topcoat-mobile-light.min.css"> -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <script type="text/javascript">
+    
+    document.addEventListener ("deviceready", onDeviceReady, false);
+
+    //This function is executed when PhoneGap loading completed.
+    function onDeviceReady () {
+        window.alert ('Loading PhoneGap is completed、Camera is now ready to be used.');
+    }
+
+    function snapPicture () {
+        navigator.camera.getPicture (onSuccess, onFail, 
+            { quality: 50, destinationType: Camera.DestinationType.DATA_URL});
+
+
+        //A callback function when snapping picture is success.
+        function onSuccess (imageData) {
+            var image = document.getElementById ('picture');
+            image.src = "data:image/jpeg;base64," + imageData;
+        }
+
+        //A callback function when snapping picture is fail.
+        function onFail (message) {
+            alert ('Error occured: ' + message);
+        }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="dropzone" onclick="snapPicture()">
+      <div>Câmera</div>
+      <img id="picture" src="./img/teste.jpg" width="800" height="600">
+    </div>
+
+    
+  </body>
+
+  <script>
+    var img = new Image();
+    /*canvas.addEventListener("touchstart", handleStart, false);
+    canvas.addEventListener("touchend", handleEnd, false);
+    canvas.addEventListener("touchmove", handleMove, false);*/
+
+    function handleStart(event){
+    console.log("start");
+    event.preventDefault(); 
+    start.x = event.targetTouches[0].pageX;
+    start.y = event.targetTouches[0].pageY;
+    }
+
+    function handleMove(event){
+    console.log("move");
+    event.preventDefault(); 
+    console.log(event);
+    move.x = event.changedTouches[0].pageX;
+    move.y = event.changedTouches[0].pageY;
+    var line = new Line(start.x,start.y,move.x,move.y);
+    line.drawWithArrowheads(ctx)  
+    }
+
+    function handleEnd(event){
+    event.preventDefault(); 
+
+    end.x = event.changedTouches[0].pageX;
+    end.y = event.changedTouches[0].pageY;
+    line.drawWithArrowheads(ctx);
+    }
+  </script>
+  </body>   
+</html>
