@@ -1,11 +1,14 @@
 <!DOCTYPE HTML>
-<html>
+<html ng-app="Main">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <script type="text/javascript" src="components/loader.js"></script>
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script src="app.js"></script>
    <!--  <link rel="stylesheet" href="css/topcoat/css/topcoat-mobile-light.min.css"> -->
     <link rel="stylesheet" href="css/style.css">
+
 
     <script type="text/javascript">
     
@@ -15,29 +18,12 @@
     function onDeviceReady () {
         window.alert ('Loading PhoneGap is completed、Camera is now ready to be used.');
     }
-
-    function snapPicture () {
-        navigator.camera.getPicture (onSuccess, onFail, 
-            { quality: 50, destinationType: Camera.DestinationType.DATA_URL});
-
-
-        //A callback function when snapping picture is success.
-        function onSuccess (imageData) {
-            var image = document.getElementById ('picture');
-            image.src = "data:image/jpeg;base64," + imageData;
-        }
-
-        //A callback function when snapping picture is fail.
-        function onFail (message) {
-            alert ('Error occured: ' + message);
-        }
-    }
     </script>
   </head>
-  <body>
+  <body ng-controller="mainController as mainCtrl">
     <div id="dropzone" onclick="snapPicture()">
-      <div>Câmera</div>
-      <img id="picture" src="./img/teste.jpg" width="800" height="600">
+      <div ng-show="mainCtrl.img.src == ''">Câmera</div>
+      <img id="picture" ng-src="{{mainCtrl.img.src}}" width="800" height="600">
     </div>
 
     
