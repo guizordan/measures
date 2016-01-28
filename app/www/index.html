@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+  <html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <script type="text/javascript" src="components/loader.js"></script>
+  </head>
+  <body>
+   
+    <canvas id="canvas" width="auto" height="auto"></canvas>
+    <script>
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		var touchCount = 0;
+		var start = new Object();
+		var end = new Object();
+		var img = new Image();
+		canvas.addEventListener("touchstart", handleStart, false);
+		canvas.addEventListener("touchend", handleEnd, false);
+
+		function handleStart(event){
+			console.log("start");
+            event.preventDefault(); 
+        	start.x = event.targetTouches[0].pageX;
+			start.y = event.targetTouches[0].pageY;
+		}
+		function handleEnd(event){
+			event.preventDefault(); 
+        	end.x = event.changedTouches[0].pageX;
+			end.y = event.changedTouches[0].pageY;
+			drawLine(start, end);
+		}
+		
+		function drawLine(p1, p2){
+ 			  ctx.save();
+
+		      var points = edges(ctx,p1,p2);
+		      if (points.length < 2) return 
+		      p1 = points[0], p2=points[points.length-1];
+
+		      // Rotate the context to point along the path
+		      var dx = p2.x-p1.x, dy=p2.y-p1.y, len=Math.sqrt(dx*dx+dy*dy);
+		      ctx.translate(p2.x,p2.y);
+		      ctx.rotate(Math.atan2(dy,dx));
+
+		      // line
+		      ctx.lineCap = 'round';
+		      ctx.beginPath();
+		      ctx.moveTo(0,0);
+		      ctx.lineTo(-len,0);
+		      ctx.closePath();
+		      ctx.stroke();
+
+		      // arrowhead
+		      ctx.beginPath();
+		      ctx.moveTo(0,0);
+		      ctx.lineTo(-size,-size);
+		      ctx.lineTo(-size, size);
+		      ctx.closePath();
+		      ctx.fill();
+
+		      ctx.restore();
+			}
+
+	img.onload = function() {
+		/// set size proportional to image
+		canvas.height = canvas.width * (img.height / img.width);
+
+		/// step 1 - resize to 50%
+		var oc = document.createElement('canvas'),
+		octx = oc.getContext('2d');
+
+		oc.width = img.width * 0.5;
+		oc.height = img.height * 0.5;
+		octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+		/// step 2 - resize 50% of step 1
+		octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+
+		/// step 3, resize to final size
+
+		ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+		0, 0, canvas.width, canvas.height);
+
+	};
+	img.src = "img/teste.jpg";
+
+
+    </script>
+  </body>
+
+     
+</html>
