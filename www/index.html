@@ -5,60 +5,74 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <script type="text/javascript" src="components/loader.js"></script>
 	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
 	<script src="app.js"></script>
    <!--  <link rel="stylesheet" href="css/topcoat/css/topcoat-mobile-light.min.css"> -->
     <link rel="stylesheet" href="css/style.css">
-
-
-    <script type="text/javascript">
-    
-    document.addEventListener ("deviceready", onDeviceReady, false);
-
-    //This function is executed when PhoneGap loading completed.
-    function onDeviceReady () {
-        window.alert ('Loading PhoneGap is completed、Camera is now ready to be used.');
-    }
-    </script>
   </head>
+  
   <body ng-controller="mainController as mainCtrl">
-    <div id="dropzone" onclick="snapPicture()">
-      <div ng-show="mainCtrl.img.src == ''">Câmera</div>
-      <img id="picture" ng-src="{{mainCtrl.img.src}}" width="800" height="600">
-    </div>
 
+    <svg id="dropzone">
+      <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
+    </svg>
     
   </body>
 
   <script>
-    var img = new Image();
-    /*canvas.addEventListener("touchstart", handleStart, false);
-    canvas.addEventListener("touchend", handleEnd, false);
-    canvas.addEventListener("touchmove", handleMove, false);*/
+    var line;
+    var vis = d3.select("#dropzone") 
+        .on("mousedown", mousedown)
+        .on("mouseup", mouseup)
+        .on("touchstart", mousedown)
+        .on("touchend", mouseup);
+
+    function mousedown() {
+      var m = d3.mouse(this);
+      line = vis.append("line")
+          .attr("x1", m[0])
+          .attr("y1", m[1])
+          .attr("x2", m[0])
+          .attr("y2", m[1]);
+      
+      vis.on("mousemove", mousemove);
+      vis.on("touchmove", mousemove);
+    }
+
+    function mousemove() {
+        var m = d3.mouse(this);
+        line.attr("x2", m[0])
+            .attr("y2", m[1]);
+    }
+
+    function mouseup() {
+        vis.on("mousemove", null);
+    }
 
     function handleStart(event){
-    console.log("start");
-    event.preventDefault(); 
-    start.x = event.targetTouches[0].pageX;
-    start.y = event.targetTouches[0].pageY;
+      console.log("start");
+      event.preventDefault(); 
+      start.x = event.targetTouches[0].pageX;
+      start.y = event.targetTouches[0].pageY;
     }
 
     function handleMove(event){
-    console.log("move");
-    event.preventDefault(); 
-    console.log(event);
-    move.x = event.changedTouches[0].pageX;
-    move.y = event.changedTouches[0].pageY;
-    var line = new Line(start.x,start.y,move.x,move.y);
-    line.drawWithArrowheads(ctx)  
+      console.log("move");
+      event.preventDefault(); 
+      console.log(event);
+      move.x = event.changedTouches[0].pageX;
+      move.y = event.changedTouches[0].pageY;
+      var line = new Line(start.x,start.y,move.x,move.y);
+      line.drawWithArrowheads(ctx)  
     }
 
     function handleEnd(event){
-    event.preventDefault(); 
-
-    end.x = event.changedTouches[0].pageX;
-    end.y = event.changedTouches[0].pageY;
-    line.drawWithArrowheads(ctx);
+      event.preventDefault(); 
+      end.x = event.changedTouches[0].pageX;
+      end.y = event.changedTouches[0].pageY;
+      line.drawWithArrowheads(ctx);
     }
+
   </script>
   </body>   
 </html>

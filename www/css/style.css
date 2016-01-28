@@ -1,30 +1,26 @@
 body {
+  position: absolute;
   background: #333;
+  overflow: hidden
 }
 
 #dropzone {
   position: relative;
-  border: 10px dotted #FFF;
+  border: 4px dotted #FFF;
   border-radius: 20px;
   color: white;
   font: bold 24px/200px arial;
-  height: auto;
-  margin: 30px auto;
+  margin: 2% auto;
   text-align: center;
   width: auto;
+  height: 500px;
+  background-image: url("../img/teste.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;  
 }
 
-#dropzone div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-#dropzone img {
-  border-radius: 10px;
-  vertical-align: middle;
-  max-width: 95%;
-  max-height: 95%;
+line {
+    stroke: steelblue;
+    stroke-width: 2px;
+    stroke-linecap: round;
 }
