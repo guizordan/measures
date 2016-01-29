@@ -14,13 +14,12 @@ body {
   text-align: center;
   width: auto;
   height: 500px;
-  background-image: url("../img/teste.jpg");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;  
-}
+  background: url("../img/teste.jpg") 0 0 no-repeat;
+  background-size: 100% 100%; 
 
-line {
-    stroke: steelblue;
-    stroke-width: 2px;
-    stroke-linecap: round;
+/*  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg); */
 }

@@ -3,76 +3,22 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no">
-    <script type="text/javascript" src="components/loader.js"></script>
-	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
-	<script src="app.js"></script>
+    <script src="components/loader.js"></script>
+  	<script src="bower_components/angular/angular.min.js"></script>
+  	<script src="bower_components/d3/d3.min.js"></script>
+    <script src='js/jquery-1.8.3.min.js'></script>
+    <script src='js/interact.min.js'></script>
+
+	  <script src="app.js"></script>
    <!--  <link rel="stylesheet" href="css/topcoat/css/topcoat-mobile-light.min.css"> -->
     <link rel="stylesheet" href="css/style.css">
   </head>
   
   <body ng-controller="mainController as mainCtrl">
-
     <svg id="dropzone">
       <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
     </svg>
-    
-  </body>
-
-  <script>
-    var line;
-    var vis = d3.select("#dropzone") 
-        .on("mousedown", mousedown)
-        .on("mouseup", mouseup)
-        .on("touchstart", mousedown)
-        .on("touchend", mouseup);
-
-    function mousedown() {
-      var m = d3.mouse(this);
-      line = vis.append("line")
-          .attr("x1", m[0])
-          .attr("y1", m[1])
-          .attr("x2", m[0])
-          .attr("y2", m[1]);
-      
-      vis.on("mousemove", mousemove);
-      vis.on("touchmove", mousemove);
-    }
-
-    function mousemove() {
-        var m = d3.mouse(this);
-        line.attr("x2", m[0])
-            .attr("y2", m[1]);
-    }
-
-    function mouseup() {
-        vis.on("mousemove", null);
-    }
-
-    function handleStart(event){
-      console.log("start");
-      event.preventDefault(); 
-      start.x = event.targetTouches[0].pageX;
-      start.y = event.targetTouches[0].pageY;
-    }
-
-    function handleMove(event){
-      console.log("move");
-      event.preventDefault(); 
-      console.log(event);
-      move.x = event.changedTouches[0].pageX;
-      move.y = event.changedTouches[0].pageY;
-      var line = new Line(start.x,start.y,move.x,move.y);
-      line.drawWithArrowheads(ctx)  
-    }
-
-    function handleEnd(event){
-      event.preventDefault(); 
-      end.x = event.changedTouches[0].pageX;
-      end.y = event.changedTouches[0].pageY;
-      line.drawWithArrowheads(ctx);
-    }
-
-  </script>
+    <input id="draw" type="button" value="desenhar" ng-click="mainCtrl.startDraw()">
+    <input id="draw" type="button" value="stop" ng-click="mainCtrl.endDraw()">
   </body>   
 </html>
