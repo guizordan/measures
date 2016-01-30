@@ -6,13 +6,8 @@
 
             mainCtrl.svg = d3.select("#dropzone");
             var line;
+            mainCtrl.lines = [];
 
-            mainCtrl.lines = document.getElementsByTagName("line");
-            if(mainCtrl.lines != null){
-                lines[0].addEventListener("touchstart", handleStart, false)
-                        .addEventListener("mousedown", handleStart, false);
-            }
-            
             mainCtrl.img = new Image();
             mainCtrl.img.src = './img/teste.jpg';
 
@@ -41,42 +36,64 @@
                    line.attr("x2", m[0])
                         .attr("y2", m[1])
                         .attr("id", guid())
-                        .attr("class", "line")
                         .attr("stroke-width", 6)
                         .attr("stroke", "red");
+                    
                 }
 
                 function mouseup() {
                     mainCtrl.svg.on("mousemove", null);
-                    console.log(line);
-                    line = null;
-                    console.log(line);
+                    var lineId = line[0][0].id;
+                    if(lineId != ""){
+                        mainCtrl.endDraw(lineId);
+                    } else{
+                        mainCtrl.endDraw(null);
+                    }                  
                 }
             }
 
             /*overrides/stops drawing functions*/
-            mainCtrl.endDraw = function() {
-               line = null;
-               mainCtrl.svg
+            mainCtrl.endDraw = function(id) {
+/*             mainCtrl.svg
                 .on("mousedown", null)
                 .on("mouseup", null)
                 .on("touchstart", null)
                 .on("touchend", null)
                 .on("mousemove", null)
-                .on("touchmove", null);
+                .on("touchmove", null);*/
+            mainCtrl.svg.select("line")
+                .on("click", startResizing(id));                
+               
+
+/*
+                if(id){
+                    var line = document.getElementById(id);
+                    line.onclick = startResizing(line);
+                }
+*/
+                
+
+/*                for (i = 0; i < mainCtrl.lines.length; ++i) {
+                    for (j = 0; j < mainCtrl.lines[i].length; ++j) {
+                        var id = mainCtrl.lines[i][j][0].id;
+                        var line = document.getElementById(id);
+                        line.onclick = startResizing(line);
+                    }
+                }*/
+
+
             }
 
+            function startResizing(line){
+                console.log("teste yay"+line);
+              /*  var line = d3.select("#"+id);
+                line.addEventListener("touchstart", startResizing, false)
+                    .addEventListener("mousedown", startResizing, false);
 
+                    function startResizing(){
 
-            function handleStart(e) {
-                console.log("dshad");
-               var m = d3.mouse(this);
-               e.path.attr("x2", m[0])
-                    .attr("y2", m[1]);
+                    }*/
             }
-            
-
-
             
 
             /*function for taking photos :-)*/
@@ -93,13 +110,7 @@
 
             /*id number generator*/
             function guid() {
-              function s4() {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                  .toString(16)
-                  .substring(1);
-              }
-              return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                s4() + '-' + s4() + s4() + s4();
+              return '_' + Math.random().toString(36).substr(2, 9);
             }
     });
 /*}*/
