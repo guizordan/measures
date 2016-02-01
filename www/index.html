@@ -7,7 +7,6 @@
   	<script src="bower_components/angular/angular.min.js"></script>
   	<script src="bower_components/d3/d3.min.js"></script>
     <script src='js/jquery-1.8.3.min.js'></script>
-    <script src='js/interact.min.js'></script>
 
 	  <script src="app.js"></script>
    <!--  <link rel="stylesheet" href="css/topcoat/css/topcoat-mobile-light.min.css"> -->
@@ -15,9 +14,36 @@
   </head>
   
   <body ng-controller="mainController as mainCtrl">
-    <svg id="dropzone">
+    <svg>
       <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
     </svg>
-    <input id="draw" type="button" value="desenhar" ng-click="mainCtrl.startDraw()">
+    <!-- Create new Plane -->
+    <input id="draw" type="button" value="Novo Plano" ng-click="mainCtrl.newPlane()">
+    <br>
+    <!-- Clear SVG -->
+    <input ng-show="mainCtrl.planes[mainCtrl.currPlane].lines > 0" id="clear" type="button" value="limpar" ng-click="mainCtrl.clearSVG()">
+    <!-- Add a new line to the plane -->
+    <form ng-show="mainCtrl.showInput" ng-submit="mainCtrl.mParameters()">
+      <input ng-model="mainCtrl.mValue" id="measure" type="number" value="">
+      <select ng-model="mainCtrl.mUnit" id="unit">
+        <option value="0">mm</option>
+        <option value="1" ng-selected="selected">cm</option>
+        <option value="2">m</option>
+      </select>
+      <input type="submit" value="salvar">
+    </form>
+    <br>
+    <!-- Changes the plane -->
+    <div ng-show="mainCtrl.planes.length > 0">
+      Trocar Plano
+      <select ng-change="mainCtrl.changePlane(this.value)" id="plane">
+        <option ng-repeat="plane in mainCtrl.planes" value="{{plane.id}}">{{plane.id + 1}}</option>
+        <!-- <ul>
+          <li ng-click="loadFromMenu($parent.$index)" ng-repeat="line in plane.tutorials">
+                {{line}}
+          </li>
+        </ul> -->
+      </select>
+    </div>
   </body>   
 </html>

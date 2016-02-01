@@ -1,18 +1,21 @@
 /*document.addEventListener ("deviceready", onDeviceReady, false);
     function onDeviceReady () {*/        
     angular.module('Main', [])
-        .controller( 'mainController', function ( ) {
+        .controller( 'mainController', function ($scope) {
             var mainCtrl = this;
 
-            mainCtrl.svg = d3.select("#dropzone");
-            var line;
-            mainCtrl.lines = [];
+            var line = new Object();
 
+            mainCtrl.svg = d3.select("svg");
+            mainCtrl.planes = [];
+
+            mainCtrl.showInput = false;
+            
             mainCtrl.img = new Image();
             mainCtrl.img.src = './img/teste.jpg';
 
             /*start drawing functions*/
-            mainCtrl.startDraw = function() {  
+            mainCtrl.drawMode = function() {
                 mainCtrl.svg
                         .on("mousedown", mousedown)
                         .on("mouseup", mouseup)
@@ -37,64 +40,98 @@
                         .attr("y2", m[1])
                         .attr("id", guid())
                         .attr("stroke-width", 6)
-                        .attr("stroke", "red");
-                    
+                        .attr("stroke", "red");      
                 }
 
                 function mouseup() {
-                    mainCtrl.svg.on("mousemove", null);
-                    var lineId = line[0][0].id;
-                    if(lineId != ""){
-                        mainCtrl.endDraw(lineId);
-                    } else{
-                        mainCtrl.endDraw(null);
-                    }                  
+                    mainCtrl.svg.on("mousemove", null)
+                                .on("touchmove", null)
+                    if(line != "" && line != null){
+                        mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
+                        drawDone();
+                    }               
                 }
             }
 
             /*overrides/stops drawing functions*/
-            mainCtrl.endDraw = function(id) {
+            function drawDone() {
+                if(isFirstDraw) {
+                    $scope.toggleInput(true);
+                    $scope.$apply();
+                }else{}
+
+                mainCtrl.svg
+                    .on("mousedown", null)
+                    .on("mouseup", null)
+                    .on("touchstart", null)
+                    .on("touchend", null);
+            }
+
+             mainCtrl.newPlane = function() {
+                //TODO
+                var plane = new Object();
+                plane.id = mainCtrl.planes.length + 1;
+                plane.lines = [];
+                plane.color = "red";
+                mainCtrl.planes.push(plane);
+                mainCtrl.currPlane = plane.id; 
+                mainCtrl.drawMode();
+            }
+
+            mainCtrl.changePlane = function(cPlane) {
+                console.log(cPlane);
+                mainCtrl.currPlane = cPlane;
+            }
+
+            mainCtrl.mParameters = function() {
+                //record first line in plane
+                line.mValue = mainCtrl.mValue;
+                line.mUnit = mainCtrl.mUnit;
+                line.mPlane = 1;
+                mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
+                $scope.toggleInput(false);
+            }
+
+            // clears all drawings
+            mainCtrl.clearSVG = function(){
+               mainCtrl.svg.selectAll("*").remove();
+               mainCtrl.planes[mainCtrl.currPlane].lines.length = 0;
+            }
+
+
+            // toggles m parameters input
+            $scope.toggleInput = function(value) {
+                mainCtrl.showInput = value;
+                if(value == true){document.getElementById("measure").focus();}
+            }
+
 /*             mainCtrl.svg
-                .on("mousedown", null)
+                .on("mousedown", function(){
+                    mainCtrl.svg.select("line").on("mousedown", function(){
+                        var line = d3.select("#"+this.id);
+                        console.log(line);
+                        var drag = d3.behavior.drag().on('drag', dragmove);
+                        line.call(drag);
+                    });
+                })
+                .on("touchstart", function(){
+                    mainCtrl.svg.select("line").on("touchstart", function(){
+                        var line = d3.select("#"+this.id);
+                        console.log(line);
+                        var drag = d3.behavior.drag().on('drag', dragmove);
+                        line.call(drag);
+                    });
+                })
                 .on("mouseup", null)
-                .on("touchstart", null)
                 .on("touchend", null)
                 .on("mousemove", null)
-                .on("touchmove", null);*/
-            mainCtrl.svg.select("line")
-                .on("click", startResizing(id));                
-               
+                .on("touchmove", null);   */                   
 
-/*
-                if(id){
-                    var line = document.getElementById(id);
-                    line.onclick = startResizing(line);
-                }
-*/
-                
-
-/*                for (i = 0; i < mainCtrl.lines.length; ++i) {
-                    for (j = 0; j < mainCtrl.lines[i].length; ++j) {
-                        var id = mainCtrl.lines[i][j][0].id;
-                        var line = document.getElementById(id);
-                        line.onclick = startResizing(line);
-                    }
-                }*/
-
-
+            function isFirstDraw(){
+                if(mainCtrl.planes[mainCtrl.currPlane].lines > 0){
+                    return false;
+                }else{return true;}
             }
-
-            function startResizing(line){
-                console.log("teste yay"+line);
-              /*  var line = d3.select("#"+id);
-                line.addEventListener("touchstart", startResizing, false)
-                    .addEventListener("mousedown", startResizing, false);
-
-                    function startResizing(){
-
-                    }*/
-            }
-            
 
             /*function for taking photos :-)*/
             mainCtrl.snapPicture = function() {

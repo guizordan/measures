@@ -4,7 +4,7 @@ body {
   overflow: hidden
 }
 
-#dropzone {
+svg {
   position: relative;
   border: 4px dotted #FFF;
   border-radius: 20px;
