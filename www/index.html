@@ -18,12 +18,13 @@
       <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
     </svg>
     <!-- Create new Plane -->
-    <input id="draw" type="button" value="Novo Plano" ng-click="mainCtrl.newPlane()">
+    <input id="newPlane" type="button" value="Novo Plano" ng-click="mainCtrl.newPlane()">
+    <input id="draw" type="button" value="Desenhar" ng-click="mainCtrl.drawMode()">
     <br>
     <!-- Clear SVG -->
     <input ng-show="mainCtrl.planes[mainCtrl.currPlane].lines > 0" id="clear" type="button" value="limpar" ng-click="mainCtrl.clearSVG()">
     <!-- Add a new line to the plane -->
-    <form ng-show="mainCtrl.showInput" ng-submit="mainCtrl.mParameters()">
+    <form ng-show="mainCtrl.showInput" ng-submit="mainCtrl.setMainLine()">
       <input ng-model="mainCtrl.mValue" id="measure" type="number" value="">
       <select ng-model="mainCtrl.mUnit" id="unit">
         <option value="0">mm</option>
@@ -32,18 +33,24 @@
       </select>
       <input type="submit" value="salvar">
     </form>
-    <br>
     <!-- Changes the plane -->
-    <div ng-show="mainCtrl.planes.length > 0">
+    <div ng-show="mainCtrl.planes.length > 1">
       Trocar Plano
-      <select ng-change="mainCtrl.changePlane(this.value)" id="plane">
-        <option ng-repeat="plane in mainCtrl.planes" value="{{plane.id}}">{{plane.id + 1}}</option>
-        <!-- <ul>
-          <li ng-click="loadFromMenu($parent.$index)" ng-repeat="line in plane.tutorials">
-                {{line}}
-          </li>
-        </ul> -->
+      <select ng-model="mainCtrl.planeSelected"
+      ng-options="plane as plane.id + 1 for plane in mainCtrl.planes"
+      ng-change="mainCtrl.setPlane()">
       </select>
     </div>
+    <ul style="color:white;">
+      <li ng-repeat="plane in mainCtrl.planes" ng-init="parentIndex = $index">
+          {{plane.id}}
+          <ul>
+              <li ng-repeat="line in plane.lines">
+                  {{line.mValue}} 
+                  {{mainCtrl.solveUnit(line.mUnit)}} 
+              </li>
+          </ul>
+      </li>
+    </ul>
   </body>   
 </html>

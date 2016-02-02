@@ -1,21 +1,24 @@
-/*document.addEventListener ("deviceready", onDeviceReady, false);
-    function onDeviceReady () {*/        
+document.addEventListener ("deviceready", onDeviceReady, false);
+    function onDeviceReady () {        
     angular.module('Main', [])
-        .controller( 'mainController', function ($scope) {
+        .controller('mainController', function ($scope) {
             var mainCtrl = this;
-
-            var line = new Object();
 
             mainCtrl.svg = d3.select("svg");
             mainCtrl.planes = [];
 
+            //controlls the current drawing
+            mainCtrl.currPlane;
+            mainCtrl.currDraw;
+
             mainCtrl.showInput = false;
             
             mainCtrl.img = new Image();
-            mainCtrl.img.src = './img/teste.jpg';
+/*            mainCtrl.img.src = './img/teste.jpg';*/
 
             /*start drawing functions*/
             mainCtrl.drawMode = function() {
+                var draw = new Object();
                 mainCtrl.svg
                         .on("mousedown", mousedown)
                         .on("mouseup", mouseup)
@@ -24,7 +27,7 @@
 
                 function mousedown() {
                     var m = d3.mouse(this);          
-                    line = mainCtrl.svg.append("line")
+                    draw = mainCtrl.svg.append("line")
                       .attr("x1", m[0])
                       .attr("y1", m[1])
                       .attr("x2", m[0])
@@ -36,7 +39,7 @@
 
                 function mousemove() {
                    var m = d3.mouse(this);
-                   line.attr("x2", m[0])
+                   draw.attr("x2", m[0])
                         .attr("y2", m[1])
                         .attr("id", guid())
                         .attr("stroke-width", 6)
@@ -46,8 +49,8 @@
                 function mouseup() {
                     mainCtrl.svg.on("mousemove", null)
                                 .on("touchmove", null)
-                    if(line != "" && line != null){
-                        mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
+                    if(draw != "" && draw != null){
+                        mainCtrl.currDraw = draw;
                         drawDone();
                     }               
                 }
@@ -55,10 +58,12 @@
 
             /*overrides/stops drawing functions*/
             function drawDone() {
-                if(isFirstDraw) {
+                if(isFirstDraw()) {
                     $scope.toggleInput(true);
                     $scope.$apply();
-                }else{}
+                }else{
+                    setLine();
+                }
 
                 mainCtrl.svg
                     .on("mousedown", null)
@@ -67,10 +72,9 @@
                     .on("touchend", null);
             }
 
-             mainCtrl.newPlane = function() {
-                //TODO
+            mainCtrl.newPlane = function() {
                 var plane = new Object();
-                plane.id = mainCtrl.planes.length + 1;
+                plane.id = mainCtrl.planes.length;
                 plane.lines = [];
                 plane.color = "red";
                 mainCtrl.planes.push(plane);
@@ -78,18 +82,56 @@
                 mainCtrl.drawMode();
             }
 
-            mainCtrl.changePlane = function(cPlane) {
-                console.log(cPlane);
-                mainCtrl.currPlane = cPlane;
+            function setLine(){
+                //push line into plane
+                var line = new Object();
+                line.draw = mainCtrl.currDraw;
+                line.mValue = getLineMeasure();
+                line.mUnit = mainCtrl.mUnit;
+                line.plane = mainCtrl.currPlane;
+                console.log(line);
+                mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
+                $scope.$apply();
             }
 
-            mainCtrl.mParameters = function() {
-                //record first line in plane
+            mainCtrl.setMainLine = function() {
+                //push line into plane
+                var line = new Object();
+                line.draw = mainCtrl.currDraw;
                 line.mValue = mainCtrl.mValue;
                 line.mUnit = mainCtrl.mUnit;
-                line.mPlane = 1;
+                line.plane = mainCtrl.currPlane;
                 mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
                 $scope.toggleInput(false);
+            }
+
+            function getLineMeasure() {
+                var mainLine = mainCtrl.planes[mainCtrl.currPlane].lines[0];
+                var mainLineHeight = mainLine.draw.node().getBBox().height;
+                var currLineHeight = mainCtrl.currDraw.node().getBBox().height;
+                console.log(mainLine.mValue);
+                console.log(currLineHeight);
+                console.log(mainLineHeight);
+                return mainLine.mValue*currLineHeight/mainLineHeight;
+            }
+
+            function getPlane(id) {
+                for(i = 0; i <= mainCtrl.planes.length; i++){
+                    console.log(mainCtrl.planes[i]);
+                    if(mainCtrl.planes[i].id == id){
+                        return mainCtrl.planes[i];    
+                    }
+                }
+            }
+
+            mainCtrl.solveUnit = function(id) {
+                if(id == 0){return "mm";}
+                else if(id == 1){ return "cm";}
+                else if (id == 2){return "m";} 
+            }
+
+            mainCtrl.setPlane = function() {
+                mainCtrl.currPlane = mainCtrl.planeSelected;
             }
 
             // clears all drawings
@@ -98,37 +140,14 @@
                mainCtrl.planes[mainCtrl.currPlane].lines.length = 0;
             }
 
-
             // toggles m parameters input
             $scope.toggleInput = function(value) {
                 mainCtrl.showInput = value;
                 if(value == true){document.getElementById("measure").focus();}
-            }
-
-/*             mainCtrl.svg
-                .on("mousedown", function(){
-                    mainCtrl.svg.select("line").on("mousedown", function(){
-                        var line = d3.select("#"+this.id);
-                        console.log(line);
-                        var drag = d3.behavior.drag().on('drag', dragmove);
-                        line.call(drag);
-                    });
-                })
-                .on("touchstart", function(){
-                    mainCtrl.svg.select("line").on("touchstart", function(){
-                        var line = d3.select("#"+this.id);
-                        console.log(line);
-                        var drag = d3.behavior.drag().on('drag', dragmove);
-                        line.call(drag);
-                    });
-                })
-                .on("mouseup", null)
-                .on("touchend", null)
-                .on("mousemove", null)
-                .on("touchmove", null);   */                   
+            }                
 
             function isFirstDraw(){
-                if(mainCtrl.planes[mainCtrl.currPlane].lines > 0){
+                if(mainCtrl.planes[mainCtrl.currPlane].lines.length > 0){
                     return false;
                 }else{return true;}
             }
@@ -150,5 +169,5 @@
               return '_' + Math.random().toString(36).substr(2, 9);
             }
     });
-/*}*/
+}
 
