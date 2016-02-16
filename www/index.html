@@ -17,29 +17,32 @@
     <svg>
       <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
     </svg>
-    <!-- Create new Plane -->
-    <input id="newPlane" type="button" value="Novo Plano" ng-click="mainCtrl.newPlane()">
-    <input id="draw" type="button" value="Desenhar" ng-click="mainCtrl.drawMode()">
-    <br>
-    <!-- Clear SVG -->
-    <input ng-show="mainCtrl.planes[mainCtrl.currPlane].lines > 0" id="clear" type="button" value="limpar" ng-click="mainCtrl.clearSVG()">
-    <!-- Add a new line to the plane -->
-    <form ng-show="mainCtrl.showInput" ng-submit="mainCtrl.setMainLine()">
-      <input ng-model="mainCtrl.mValue" id="measure" type="number" value="">
-      <select ng-model="mainCtrl.mUnit" id="unit">
-        <option value="0">mm</option>
-        <option value="1" ng-selected="selected">cm</option>
-        <option value="2">m</option>
-      </select>
-      <input type="submit" value="salvar">
-    </form>
-    <!-- Changes the plane -->
-    <div ng-show="mainCtrl.planes.length > 1">
-      Trocar Plano
-      <select ng-model="mainCtrl.planeSelected"
-      ng-options="plane as plane.id + 1 for plane in mainCtrl.planes"
-      ng-change="mainCtrl.setPlane()">
-      </select>
+    <!-- tooblox -->
+    <div class="toolbox">
+      <!-- Create new Plane -->
+      <input ng-show="!mainCtrl.planes[mainCtrl.currPlane]" id="newPlane" type="button" value="Novo Plano" ng-click="mainCtrl.newPlane()">
+      <input ng-show="mainCtrl.planes[mainCtrl.currPlane].lines.length > 0" id="draw" type="button" value="Desenhar" ng-click="mainCtrl.drawMode()">
+      <br>
+      <!-- Clear SVG -->
+      <input ng-show="mainCtrl.planes[mainCtrl.currPlane].lines.length > 0" id="clear" type="button" value="limpar" ng-click="mainCtrl.clearSVG()">
+      <!-- Add a new line to the plane -->
+      <form ng-show="mainCtrl.showInput" ng-submit="mainCtrl.setMainLine()">
+        <input ng-model="mainCtrl.mValue" id="measure" type="number" value="">
+        <select ng-model="mainCtrl.mUnit" id="unit">
+          <option value="0">mm</option>
+          <option value="1">cm</option>
+          <option value="2">m</option>
+        </select>
+        <input type="submit" value="salvar">
+      </form>
+      <!-- Changes the plane -->
+      <div ng-show="mainCtrl.planes.length > 1">
+        Trocar Plano
+        <select ng-model="mainCtrl.planeSelected"
+        ng-options="plane as plane.id + 1 for plane in mainCtrl.planes"
+        ng-change="mainCtrl.setPlane()">
+        </select>
+      </div>
     </div>
     <ul style="color:white;">
       <li ng-repeat="plane in mainCtrl.planes" ng-init="parentIndex = $index">

@@ -1,5 +1,5 @@
-document.addEventListener ("deviceready", onDeviceReady, false);
-    function onDeviceReady () {        
+/*document.addEventListener ("deviceready", onDeviceReady, false);
+    function onDeviceReady () {  */      
     angular.module('Main', [])
         .controller('mainController', function ($scope) {
             var mainCtrl = this;
@@ -14,7 +14,7 @@ document.addEventListener ("deviceready", onDeviceReady, false);
             mainCtrl.showInput = false;
             
             mainCtrl.img = new Image();
-/*            mainCtrl.img.src = './img/teste.jpg';*/
+            mainCtrl.img.src = './img/teste.jpg';
 
             /*start drawing functions*/
             mainCtrl.drawMode = function() {
@@ -86,10 +86,9 @@ document.addEventListener ("deviceready", onDeviceReady, false);
                 //push line into plane
                 var line = new Object();
                 line.draw = mainCtrl.currDraw;
-                line.mValue = getLineMeasure();
+                line.mValue = parseFloat(Math.round(getLineMeasure() * 100) / 100).toFixed(2);
                 line.mUnit = mainCtrl.mUnit;
                 line.plane = mainCtrl.currPlane;
-                console.log(line);
                 mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
                 $scope.$apply();
             }
@@ -98,7 +97,7 @@ document.addEventListener ("deviceready", onDeviceReady, false);
                 //push line into plane
                 var line = new Object();
                 line.draw = mainCtrl.currDraw;
-                line.mValue = mainCtrl.mValue;
+                line.mValue = parseFloat(Math.round(mainCtrl.mValue * 100) / 100).toFixed(2);
                 line.mUnit = mainCtrl.mUnit;
                 line.plane = mainCtrl.currPlane;
                 mainCtrl.planes[mainCtrl.currPlane].lines.push(line);
@@ -106,13 +105,22 @@ document.addEventListener ("deviceready", onDeviceReady, false);
             }
 
             function getLineMeasure() {
-                var mainLine = mainCtrl.planes[mainCtrl.currPlane].lines[0];
-                var mainLineHeight = mainLine.draw.node().getBBox().height;
+                var mainLineBase;
+                var mainLine = mainCtrl.planes[mainCtrl.currPlane].lines[0];        
                 var currLineHeight = mainCtrl.currDraw.node().getBBox().height;
-                console.log(mainLine.mValue);
-                console.log(currLineHeight);
-                console.log(mainLineHeight);
-                return mainLine.mValue*currLineHeight/mainLineHeight;
+                var currLineWidth = mainCtrl.currDraw.node().getBBox().width;
+                var mainLineHeight = mainLine.draw.node().getBBox().height;
+                var mainLineWidth = mainLine.draw.node().getBBox().width;
+                if(mainLineHeight>=mainLineWidth){
+                    mainLineBase = mainLineHeight;
+                }else{
+                    mainLineBase = mainLineWidth;
+                }
+                if(currLineHeight>=currLineWidth){
+                    return mainLine.mValue*currLineHeight/mainLineBase;
+                } else{
+                    return mainLine.mValue*currLineWidth/mainLineBase;
+                }
             }
 
             function getPlane(id) {
@@ -169,5 +177,5 @@ document.addEventListener ("deviceready", onDeviceReady, false);
               return '_' + Math.random().toString(36).substr(2, 9);
             }
     });
-}
-
+/*}
+*/
