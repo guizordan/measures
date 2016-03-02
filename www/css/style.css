@@ -17,17 +17,11 @@ svg {
   text-align: center; 
   width: 90%;
   height: 500px;
-  background: url("../img/teste.jpg") 0 0 no-repeat;
-  background-size: 100% 100%; 
-
-/*  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg); */
+  /*background: url("../img/teste.jpg") 0 0 no-repeat;
+  background-size: 100% 100%;*/
 }
 
 .toolbox{
-  margin-left: 50% ;
+  margin-left: 50%;
   padding: 0;
 }

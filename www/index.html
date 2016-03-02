@@ -14,7 +14,7 @@
   </head>
   
   <body ng-controller="mainController as mainCtrl">
-    <svg>
+    <svg id="svg">
       <div ng-show="mainCtrl.img.src == ''" ng-click="mainCtrl.snapPicture()">Câmera</div>
     </svg>
     <!-- tooblox -->
@@ -35,6 +35,8 @@
         </select>
         <input type="submit" value="salvar">
       </form>
+      <!-- snaps picture -->
+      <input type="button" ng-click="mainCtrl.snapPicture()" value="Take Pictures">
       <!-- Changes the plane -->
       <div ng-show="mainCtrl.planes.length > 1">
         Trocar Plano

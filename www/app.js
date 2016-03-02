@@ -160,22 +160,32 @@
                 }else{return true;}
             }
 
-            /*function for taking photos :-)*/
-            mainCtrl.snapPicture = function() {
-                navigator.camera.getPicture (onSuccess, onFail, 
-                    { quality: 50, destinationType: Camera.DestinationType.DATA_URL});
-                function onSuccess (imageData) {    
-                    mainCtrl.img.src = "data:image/jpeg;base64," + imageData;
-                }
-                function onFail (message) {
-                    alert ('Error occured: ' + message);
-                }
-            }
-
             /*id number generator*/
             function guid() {
               return '_' + Math.random().toString(36).substr(2, 9);
             }
+
+            // taking pictures function
+            mainCtrl.snapPicture = function() {
+                var svg = document.getElementById('svg');
+                svg.style.background = "none";
+
+                navigator.camera.getPicture (onSuccess, onFail, 
+                    { quality: 50, destinationType: Camera.DestinationType.DATA_URL});
+
+                function onSuccess (imageData) {
+                    var image = "data:image/jpeg;base64," + imageData;
+                    svg.style.backgroundImage = "url('"+image+"') 0 0 no-repeat";
+                    svg.style.backgroundSize = "100% 100%";
+                }
+
+                function onFail (message) {
+                    alert ('Error occured: ' + message);
+                }
+            }
     });
+
+
+
 /*}
 */
